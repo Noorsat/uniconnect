@@ -230,7 +230,7 @@ exports.ForgotPassword = async (req, res) => {
       });
     }
 
-    let code = Math.floor(100000 + Math.random() * 900000);
+    let code = Math.floor(1000 + Math.random() * 9000);
     let response = await sendEmail(user.email, code);
 
     if (response.error) {
