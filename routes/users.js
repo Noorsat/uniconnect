@@ -16,7 +16,7 @@ router.put("/forgot", cleanBody, AuthController.ForgotPassword);
 
 router.put("/reset", cleanBody, AuthController.ResetPassword);
 
-router.get("/all", validateToken, (req, res) => res.status(200).send("yeah"))
+router.get("/:userId", validateToken, AuthController.GetUser);
 
 router.get("/referred", validateToken, AuthController.ReferredAccounts);
 

@@ -341,9 +341,34 @@ exports.Logout = async (req, res) => {
     return res.send({ success: true, message: "User Logged out" });
   } catch (error) {
     console.error("user-logout-error", error);
-    return res.stat(500).json({
+    return res.status(500).json({
       error: true,
       message: error.message,
     });
   }
 };
+
+exports.GetUser = async (req, res) => {
+  try{
+    const { userId } = req.params;
+
+    let user = await User.findOne({ userId });
+
+    if (!user){
+      return res.status(400).json({
+        error: true,
+        message: "No such user exists"
+      })
+    }
+
+    return res.status(200).json({
+      user
+    })
+  }catch (error){
+    console.log("user-not-found", error);
+    return res.status(500).json({
+      error:true,
+      message: error.message
+    })
+  }
+}
