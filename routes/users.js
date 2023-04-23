@@ -8,6 +8,8 @@ const AuthController = require("../src/users/user.controller");
 
 router.post("/signup", cleanBody, AuthController.Signup);
 
+router.put("/repeatCode", cleanBody, AuthController.RepeatCode);
+
 router.put("/activate", cleanBody, AuthController.Activate);
 
 router.post("/login", cleanBody, AuthController.Login);
@@ -21,5 +23,7 @@ router.get("/:userId", validateToken, AuthController.GetUser);
 router.get("/referred", validateToken, AuthController.ReferredAccounts);
 
 router.get("/logout", validateToken, AuthController.Logout);
+
+router.delete('/delete/:userId', validateToken, AuthController.DeleteUser)
 
 module.exports = router;

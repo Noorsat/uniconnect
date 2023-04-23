@@ -99,6 +99,73 @@ exports.Signup = async (req, res) => {
   }
 };
 
+exports.RepeatCode = async (req, res) => {
+  try{
+    const {email} = req.body;
+
+    if (!email){
+      return res.json({
+        error: true,
+        status:400,
+        message: "This email not created"
+      })
+    }
+
+    const user = await User.findOne({
+      email: email
+    })
+
+    if (user.active)
+    return res.send({
+      error: true,
+      message: "Account already activated",
+      status: 400,
+    });
+
+    let code = Math.floor(1000 + Math.random() * 9000);
+
+    let expiry = Date.now() + 60 * 1000 * 15;
+
+    const sendCode = await sendEmail(email, code);
+
+    if (sendCode.error) {
+      return res.status(500).json({
+        error: true,
+        message: "Couldn't send verification email.",
+      });
+    }
+
+    const newCode = await User.updateOne(
+      {
+        userId: user?.userId 
+      },
+      {
+        $set: {
+          emailToken: code,
+          emailTokenExpires: new Date(expiry)
+        }
+      }
+    )
+
+    res.status(200).json(
+      {
+        success:true,
+        status:200,
+        user:{
+          emailToken: code,
+          emailTokenExpires: new Date(expiry)
+        }
+      }
+    )
+  } catch (error){
+    console.log('repeat-code-error', error);
+    res.status(500).json({
+      error:true,
+      message: 'Can not send new code'
+    })
+  }
+}
+
 exports.Activate = async (req, res) => {
   try {
     const { email, code } = req.body;
@@ -352,7 +419,7 @@ exports.GetUser = async (req, res) => {
   try{
     const { userId } = req.params;
 
-    let user = await User.findOne({ userId });
+    const user = await User.findOne({ userId });
 
     if (!user){
       return res.status(400).json({
@@ -368,6 +435,35 @@ exports.GetUser = async (req, res) => {
     console.log("user-not-found", error);
     return res.status(500).json({
       error:true,
+      message: error.message
+    })
+  }
+}
+
+exports.DeleteUser = async (req, res) => {
+  try {
+    const {userId} = req.params;
+
+    const user = await User.findOne({userId});
+
+    if (!user){
+      return res.status(400).json({
+        error: true,
+        message: "No such user exists"
+      })
+    }
+
+    const deleteUser = await User.deleteOne({userId: userId});
+
+    return res.status(200).json({
+      succes:true,
+      message:'Succesfully delete user',
+      user: deleteUser 
+    })
+  }catch (error){
+    console.log('delete-user-error', error);
+    return res.status(500).json({
+      error:true, 
       message: error.message
     })
   }
