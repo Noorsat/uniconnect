@@ -9,6 +9,8 @@ const PORT = 5000;
 const authRoutes = require("./routes/users");
 const userStoriesRoutes = require("./routes/userStoreies")
 const clubsRoutes = require("./routes/clubs");
+const eventsRoutes = require("./routes/events");
+const spacesRoutes = require("./routes/spaces");
  
 mongoose
   .connect('mongodb+srv://user:qwerty123@cluster0.tup4ivx.mongodb.net/?retryWrites=true&w=majority', {
@@ -29,6 +31,8 @@ app.use(cors())
 app.use("/users", authRoutes);
 app.use("/stories", userStoriesRoutes);
 app.use("/clubs", clubsRoutes)
+app.use("/event", eventsRoutes)
+app.use("/space", spacesRoutes)
 
 app.listen(PORT, () => {
   console.log("Server lauching in port: " + PORT);

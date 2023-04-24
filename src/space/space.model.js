@@ -6,7 +6,7 @@ const spaceSchema = new Schema(
     userId: {type: String, required: true },
     title: {type: String, required: true },
     description: {type: String, required: true },
-    imageUrl: {type: String, required: true },
+    image: { data: Buffer, contentType: String },
   },
   {
     timestamps: {

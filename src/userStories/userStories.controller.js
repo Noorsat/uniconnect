@@ -17,9 +17,6 @@ exports.createStories = (req, res) => {
         try {
             const {userId} = req.body;
 
-            console.log(userId);
-            console.log(req.file)
-
             const newUserStories = new UserStories({
                 userId: userId, 
                 image: {
