@@ -5,8 +5,8 @@ const { validateToken } = require("../middlewares/validateToken");
 
 const SpacesController = require("../src/space/space.controller");
 
-router.post("/create", SpacesController.createSpace);
+router.post("/create", validateToken, SpacesController.createSpace);
 
-router.get("/all", SpacesController.getSpaces)
+router.get("/all", validateToken, SpacesController.getSpaces)
 
 module.exports = router;
