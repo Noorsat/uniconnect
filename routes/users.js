@@ -18,7 +18,7 @@ router.put("/forgot", cleanBody, AuthController.ForgotPassword);
 
 router.put("/reset", cleanBody, AuthController.ResetPassword);
 
-router.get("/:userId", validateToken, AuthController.GetUser);
+router.get("/", validateToken, AuthController.GetUser);
 
 router.get("/referred", validateToken, AuthController.ReferredAccounts);
 

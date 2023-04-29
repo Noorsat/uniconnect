@@ -1,5 +1,6 @@
 const Joi = require("joi");
 require("dotenv").config();
+const jwt_decode = require("jwt-decode");
 const { v4: uuid } = require("uuid");
 const { customAlphabet: generate } = require("nanoid");
 
@@ -417,7 +418,12 @@ exports.Logout = async (req, res) => {
 
 exports.GetUser = async (req, res) => {
   try{
-    const { userId } = req.params;
+    const token = req.headers.authorization.split(" ")[1]; 
+    var decoded = jwt_decode(token);
+
+    const userId = decoded?.id;
+
+
 
     const user = await User.findOne({ userId });
 
