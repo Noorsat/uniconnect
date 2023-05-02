@@ -7,6 +7,8 @@ const ClubsController = require("../src/club/club.controller");
 
 router.post("/create", validateToken, ClubsController.createClub);
 
-router.get("/all", validateToken, ClubsController.getClubs)
+router.get("/all", validateToken, ClubsController.getClubs);
+
+router.get("/:id", validateToken, ClubsController.getClub);
 
 module.exports = router;

@@ -71,3 +71,29 @@ exports.getClubs = async (req, res) => {
         })
     }
 }
+
+exports.getClub = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const club = await Club.findById(id);
+
+        if (!club){
+            return res.status(404).json({
+                error:true,
+                message: 'No club with this id'
+            })
+        }
+
+        return res.status(200).json({
+            success:true,
+            data: club
+        })
+    } catch (error){
+            console.error("clubs-get", error);
+            return res.status(500).json({
+            error: true,
+            message: error.message,
+        })
+    }
+}

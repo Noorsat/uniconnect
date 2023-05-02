@@ -34,6 +34,8 @@ app.use("/clubs", clubsRoutes)
 app.use("/event", eventsRoutes)
 app.use("/space", spacesRoutes)
 
+app.use('/', express.static('uploads'))
+
 app.listen(PORT, () => {
   console.log("Server lauching in port: " + PORT);
 });
