@@ -1,10 +1,13 @@
 const Space = require("./space.model");
 const multer = require('multer');
+const cloudinary = require('../../utils/cloudinary');
 
 const Storage = multer.diskStorage({
-    destination:'uploads',
-    filename: (req, file, cb) => {
-      cb(null, file.originalname)
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb){
+        cb(null, new Date().toISOString() + '-' + file.originalname)
     }
   })
   
@@ -13,18 +16,19 @@ const Storage = multer.diskStorage({
   }).single('image') 
 
 exports.createSpace = (req, res) => {
-    upload(req, res, (err) => {
+    upload(req, res, async (err) => {
         try {
             const { userId, title, description } = req.body;
+            
+            const path = req.file.path;
+
+            const result = await cloudinary.uploader.upload(path);
 
             const newSpace = new Space({
                 userId,
                 title,
                 description,
-                image: {
-                    data: req.file.filename,
-                    contentType:'image/png'
-                }
+                image: result.url
             })
 
             newSpace.save().then(() => {

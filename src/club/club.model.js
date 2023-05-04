@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const clubSchema = new Schema(
   {
     name: { type: String, required: true },
-    logo: { data: Buffer, contentType: String },
+    logo: { type: String, required: true },
     description: {type: String, required: true },
     headId: {type: String, required: true}
   },

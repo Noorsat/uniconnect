@@ -1,10 +1,13 @@
 const Event = require("./event.model");
 const multer = require('multer');
+const cloudinary = require('../../utils/cloudinary');
 
 const Storage = multer.diskStorage({
-    destination:'uploads',
-    filename: (req, file, cb) => {
-      cb(null, file.originalname)
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb){
+        cb(null, new Date().toISOString() + '-' + file.originalname)
     }
   })
   
@@ -13,9 +16,13 @@ const Storage = multer.diskStorage({
   }).single('image') 
 
 exports.createEvent = (req, res) => {
-    upload(req, res, (err) => {
+    upload(req, res, async (err) => {
         try {
             const {name, date, location, description, price, allSeats, booked, clubId, responsibleUserId } = req.body;
+
+            const path = req.file.path;
+
+            const result = await cloudinary.uploader.upload(path);
 
             const event = new Event({
                 name,
@@ -27,10 +34,7 @@ exports.createEvent = (req, res) => {
                 booked,
                 clubId, 
                 responsibleUserId,
-                image: {
-                    data: req.file.filename,
-                    contentType: 'image/png'
-                }
+                image: result.url
             })
 
             event.save().then(() => {

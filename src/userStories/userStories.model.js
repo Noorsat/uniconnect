@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const userStoriesSchema = new Schema(
   {
-    image: { data: Buffer, contentType: String },
+    image: {type: String, required: true },
     userId: {type: String, required: true },
   },
   {
