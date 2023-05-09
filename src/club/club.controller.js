@@ -22,6 +22,7 @@ exports.createClub = (req, res) => {
 
             console.log(req.files[0])
 
+            
             const path = req.file.path;
 
             const result = await cloudinary.uploader.upload(path);
