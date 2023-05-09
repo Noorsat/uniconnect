@@ -21,7 +21,6 @@ exports.createClub = (req, res) => {
             const {name, description, headId} = req.body;
 
             console.log(req.files[0])
-            
 
             const path = req.file.path;
 
