@@ -5,7 +5,7 @@ const { validateToken } = require("../middlewares/validateToken");
 
 const ClubsController = require("../src/club/club.controller");
 
-router.post("/create", validateToken, ClubsController.createClub);
+router.post("/create", ClubsController.createClub);
 
 router.get("/all", validateToken, ClubsController.getClubs);
 
