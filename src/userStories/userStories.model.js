@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const userStoriesSchema = new Schema(
   {
     image: {type: String, required: true },
+    title: {type: String, required: true},
     userId: {type: String, required: true },
   },
   {

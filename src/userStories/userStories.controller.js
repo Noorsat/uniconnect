@@ -18,7 +18,7 @@ const Storage = multer.diskStorage({
 exports.createStories = (req, res) => {
     upload(req, res, async (err) => {
         try {
-            const {userId} = req.body;
+            const {userId, title} = req.body;
 
             const path = req.file.path;
 
@@ -26,6 +26,7 @@ exports.createStories = (req, res) => {
 
             const newUserStories = new UserStories({
                 userId: userId, 
+                title: title,
                 image: result.url
             })
 
