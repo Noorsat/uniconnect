@@ -3,16 +3,16 @@ const Schema = mongoose.Schema;
 
 const eventSchema = new Schema(
   {
-    name: { type: String, required: true },
-    image: { type: String, required: true},
-    date: {type: Date, required: true },
-    location: {type: String, required: true },
-    description: {type: String, required: true },
-    price: {type: Number, required: true },
-    allSeats: {type: Number, required: true },
-    booked: {type: Number, required: true },
-    clubId: {type: String, required: true },
-    responsibleUserId: {type: String, required: true },
+    title: {type: String, required:true},
+    date: {type: String, required: true},
+    time: {type: String, required: true},
+    description: {type: String, required: true},
+    clubId: {type: String},
+    images: [{type: String, required: true}],
+    storyImage: {type: String},
+    cardNumber: {type: Number},
+    price: {type: Number},
+    ticketCount: {type: Number},
   },
   {
     timestamps: {

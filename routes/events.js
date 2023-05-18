@@ -5,8 +5,8 @@ const { validateToken } = require("../middlewares/validateToken");
 
 const EventsController = require("../src/event/event.controller");
 
-router.post("/create", validateToken, EventsController.createEvent);
+router.post("/create", EventsController.createEvent);
+
 
 router.get("/all", validateToken, EventsController.getEvents)
-
 module.exports = router;
