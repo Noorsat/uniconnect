@@ -11,6 +11,9 @@ const userStoriesRoutes = require("./routes/userStoreies")
 const clubsRoutes = require("./routes/clubs");
 const eventsRoutes = require("./routes/events");
 const spacesRoutes = require("./routes/spaces");
+const postsRoutes = require("./routes/posts");
+const commentsRoutes = require("./routes/comment");
+const likesRoutes = require("./routes/likes");
  
 mongoose
   .connect('mongodb+srv://user:qwerty123@cluster0.tup4ivx.mongodb.net/?retryWrites=true&w=majority', {
@@ -33,6 +36,9 @@ app.use("/stories", userStoriesRoutes);
 app.use("/clubs", clubsRoutes)
 app.use("/event", eventsRoutes)
 app.use("/space", spacesRoutes)
+app.use("/posts", postsRoutes)
+app.use("/comments", commentsRoutes)
+app.use("/likes", likesRoutes)
 
 app.use('/', express.static('uploads'))
 

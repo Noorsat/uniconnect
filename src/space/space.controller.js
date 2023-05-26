@@ -1,4 +1,5 @@
 const Space = require("./space.model");
+const Post = require("./../post/post.model");
 const multer = require('multer');
 const cloudinary = require('../../utils/cloudinary');
 
@@ -54,6 +55,12 @@ exports.getSpaces = async (req, res) => {
     try {
         const spaces = await Space.find();
 
+        for (let i = 0; i < spaces.length; i++){
+            const post = await Post.find({ spaceId: spaces[i]._id })
+
+            spaces[i].postCount = post?.length;
+        }
+
         if (spaces?.length === 0){
             return res.status(500).json({
                 error:true,
@@ -61,15 +68,38 @@ exports.getSpaces = async (req, res) => {
             })
         }
 
-        return res.status(200).json({
-            success:true,
-            message: 'Succesfully get spaces',
-            data: spaces
-        })
+        return res.status(200).json(spaces);
     } catch (error){
         console.error("spaces-get-error", error);
         return res.status(500).json({
             error:true,
+            message: error.message
+        })
+    }
+}
+
+exports.getSpace = async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        const space = await Space.findById(id);
+
+        const posts = await Post.find({ spaceId: space._id});
+
+        space.posts = posts;
+
+        if (!space){
+            res.status(500).json({
+                error: true,
+                message: 'This space not created'
+            })
+        }
+
+        res.status(200).json(space);
+    } catch (error){
+        console.error("space-get-error", error);
+        return res.status(500).json({
+            error: true,
             message: error.message
         })
     }

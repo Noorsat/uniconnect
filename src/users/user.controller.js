@@ -3,6 +3,8 @@ require("dotenv").config();
 const jwt_decode = require("jwt-decode");
 const { v4: uuid } = require("uuid");
 const { customAlphabet: generate } = require("nanoid");
+const multer = require('multer');
+const cloudinary = require('../../utils/cloudinary');
 
 const { generateJwt } = require("./helpers/generateJwt");
 const { sendEmail } = require("./helpers/mailer");
@@ -15,6 +17,19 @@ const REFERRAL_CODE_LENGTH = 8;
 
 const referralCode = generate(CHARACTER_SET, REFERRAL_CODE_LENGTH);
 
+const Storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, './uploads/')
+  },
+  filename: function (req, file, cb){
+      cb(null, new Date().toISOString() + '-' + file.originalname)
+  }
+})
+
+const upload = multer({
+  storage: Storage
+}).single('image')
+
 const userSchema = Joi.object().keys({
   email: Joi.string().email({ minDomainSegments: 2 }),
   password: Joi.string().required().min(8),
@@ -24,80 +39,78 @@ const userSchema = Joi.object().keys({
 });
 
 exports.Signup = async (req, res) => {
-  try {
-    const result = userSchema.validate(req.body);
-    
-    if (result.error) {
-      console.log(result.error.message);
-      return res.json({
-        error: true,
-        status: 400,
-        message: result.error.message,
-     });
-    }
+  upload(req, res, async (err) => {
+    try {
+      const result = userSchema.validate(req.body);
 
-    var user = await User.findOne({
-      email: result.value.email,
-    });
+      let image = "";
 
-    if (user) {
-      return res.json({
-        error: true, 
-        message: "Email is already in use",
-      });
-    }
+      if (req.file){
+          const path = req.file.path;
 
-    const hash = await User.hashPassword(result.value.password);
-
-    const id = uuid();
-    result.value.userId = id;
-
-    delete result.value.confirmPassword;
-    result.value.password = hash;
-
-    let code = Math.floor(1000 + Math.random() * 9000);
-
-    let expiry = Date.now() + 60 * 1000 * 15;
-
-    const sendCode = await sendEmail(result.value.email, code);
-
-    if (sendCode.error) {
-      return res.status(500).json({
-        error: true,
-        message: "Couldn't send verification email.",
-      });
-    }
-
-    result.value.emailToken = code;
-    result.value.emailTokenExpires = new Date(expiry);
-
-    if (result.value.hasOwnProperty("referrer")) {
-      let referrer = await User.findOne({
-        referralCode: result.value.referrer,
-      });
-      if (!referrer) {
-        return res.status(400).send({
+          image = await cloudinary.uploader.upload(path);
+      }
+      
+      if (result.error) {
+        console.log(result.error.message);
+        return res.json({
           error: true,
-          message: "Invalid referral code.",
+          status: 400,
+          message: result.error.message,
+      });
+      }
+
+      var user = await User.findOne({
+        email: result.value.email,
+      });
+
+      if (user) {
+        return res.json({
+          error: true, 
+          message: "Email is already in use",
         });
       }
-    }
-    result.value.referralCode = referralCode();
-    const newUser = new User(result.value);
-    await newUser.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Registration Success",
-      referralCode: result.value.referralCode,
-    });
-  } catch (error) {
-    console.error("signup-error", error);
-    return res.status(500).json({
-      error: true,
-      message: "Cannot Register",
-    });
-  }
+      const hash = await User.hashPassword(result.value.password);
+
+      const id = uuid();
+      result.value.userId = id;
+
+      delete result.value.confirmPassword;
+      result.value.password = hash;
+
+      let code = Math.floor(1000 + Math.random() * 9000);
+
+      let expiry = Date.now() + 60 * 1000 * 15;
+
+      const sendCode = await sendEmail(result.value.email, code);
+
+      if (sendCode.error) {
+        return res.status(500).json({
+          error: true,
+          message: "Couldn't send verification email.",
+        });
+      }
+
+      result.value.emailToken = code;
+      result.value.emailTokenExpires = new Date(expiry);
+
+      const newUser = new User({...result.value, image: image?.url});
+      await newUser.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Registration Success",
+        referralCode: result.value.referralCode,
+      });
+    } catch (error) {
+      console.error("signup-error", error);
+      return res.status(500).json({
+        error: true,
+        message: "Cannot Register",
+      });
+    }
+  })
 };
 
 exports.RepeatCode = async (req, res) => {
@@ -422,8 +435,6 @@ exports.GetUser = async (req, res) => {
     var decoded = jwt_decode(token);
 
     const userId = decoded?.id;
-
-
 
     const user = await User.findOne({ userId });
 

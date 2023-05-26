@@ -7,6 +7,8 @@ const SpacesController = require("../src/space/space.controller");
 
 router.post("/create", validateToken, SpacesController.createSpace);
 
-router.get("/all", validateToken, SpacesController.getSpaces)
+router.get("/all", validateToken, SpacesController.getSpaces);
+
+router.get("/:id", validateToken, SpacesController.getSpace)
 
 module.exports = router;

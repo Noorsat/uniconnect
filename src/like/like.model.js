@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const commentSchema = new Schema(
+const likeSchema = new Schema(
   {
     spaceId: {type: String, required: true },
     postId: {type: String, required: true },
-    comment : {type: String, required: true },
   },
   {
     timestamps: {
@@ -15,5 +14,5 @@ const commentSchema = new Schema(
   }
 );
 
-const Comment = mongoose.model("comment", commentSchema);
-module.exports = Comment;
+const Like = mongoose.model("like", likeSchema);
+module.exports = Like;
