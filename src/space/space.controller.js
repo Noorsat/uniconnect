@@ -2,6 +2,7 @@ const Space = require("./space.model");
 const Post = require("./../post/post.model");
 const multer = require('multer');
 const cloudinary = require('../../utils/cloudinary');
+const jwt_decode = require("jwt-decode");
 
 const Storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,7 +20,12 @@ const Storage = multer.diskStorage({
 exports.createSpace = (req, res) => {
     upload(req, res, async (err) => {
         try {
-            const { userId, title, description } = req.body;
+            const { title, description } = req.body;
+
+            const token = req.headers.authorization.split(" ")[1]; 
+            var decoded = jwt_decode(token);
+    
+            const userId = decoded?.id;
             
             const path = req.file.path;
 
