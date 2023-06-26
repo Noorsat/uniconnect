@@ -21,8 +21,6 @@ exports.createPost = (req, res) => {
         try {
             const {spaceId, name, description} = req.body;
 
-            console.log(req)
-
             const path = req.file.path;
 
             const result = await cloudinary.uploader.upload(path);

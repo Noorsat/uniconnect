@@ -23,10 +23,12 @@ exports.createSpace = (req, res) => {
             const { title, description } = req.body;
 
             const token = req.headers.authorization.split(" ")[1]; 
-            
+
             var decoded = jwt_decode(token);
     
             const userId = decoded?.id;
+
+            console.log(req.file)
             
             const path = req.file.path;
 
