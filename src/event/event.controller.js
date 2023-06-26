@@ -1,6 +1,7 @@
 const Event = require("./event.model");
 const multer = require('multer');
 const cloudinary = require('../../utils/cloudinary');
+const jwt_decode = require("jwt-decode");
 
 const Storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -21,7 +22,13 @@ exports.createEvent = (req, res) => {
             const { title, date, time, description, clubId, cardNumber, price, ticketCount } = req.body;
 
             let linksArray = [];
-            let storyLink = ""
+            let storyLink = "";
+
+            const token = req.headers.authorization.split(" ")[1]; 
+
+            var decoded = jwt_decode(token);
+    
+            const userId = decoded?.id;
 
             for (let i = 0; i < req.files.length-1; i++){
                 const path = req.files[i].path;
@@ -46,8 +53,9 @@ exports.createEvent = (req, res) => {
                 cardNumber,
                 price,
                 ticketCount,
+                userId,
                 images: linksArray,
-                storyImage: storyLink
+                storyImage: storyLink,
             })
 
             event.save().then(() => {
@@ -90,6 +98,36 @@ exports.getEvents = async (req, res) => {
         })
     }catch (error){
         console.error("event-get-error", error);
+        return res.status(500).json({
+            error:true,
+            message: error.message
+        })
+    }
+}
+
+exports.getMyEvents = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1]; 
+
+        var decoded = jwt_decode(token);
+
+        const userId = decoded?.id;
+
+        const events = Event.find({userId: userId});
+
+        if (events.length === 0){
+            return res.status(500).json({
+                error: true,
+                message: "You don't have events"
+            })
+        }
+
+        return res.status(200).json({
+            success:true,
+            data: events
+        })
+    } catch (error){
+        console.error("get-myevents-error", error);
         return res.status(500).json({
             error:true,
             message: error.message

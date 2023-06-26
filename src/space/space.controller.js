@@ -28,8 +28,6 @@ exports.createSpace = (req, res) => {
     
             const userId = decoded?.id;
 
-            console.log(req.file)
-            
             const path = req.file.path;
 
             const result = await cloudinary.uploader.upload(path);

@@ -8,6 +8,7 @@ const eventSchema = new Schema(
     time: {type: String, required: true},
     description: {type: String, required: true},
     clubId: {type: String},
+    userId: {type: String, required: true},
     images: [{type: String, required: true}],
     storyImage: {type: String},
     cardNumber: {type: Number},

@@ -7,6 +7,8 @@ const EventsController = require("../src/event/event.controller");
 
 router.post("/create", validateToken, EventsController.createEvent);
 
-
 router.get("/all", validateToken, EventsController.getEvents)
+
+router.get("/my", validateToken, EventsController.getMyEvents)
+
 module.exports = router;

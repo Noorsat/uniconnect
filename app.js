@@ -24,7 +24,6 @@ mongoose
     console.log("Ok")
   })
 
-
 const app = express();
 
 app.use(bodyParser.json());
