@@ -116,7 +116,7 @@ exports.getMyEvents = async (req, res) => {
 
         const userId = decoded?.id;
 
-        const events = Event.find({userId: userId});
+        const events = await Event.find({userId: userId});
 
         if (events.length === 0){
             return res.status(500).json({
