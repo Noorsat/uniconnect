@@ -14,20 +14,18 @@ const Storage = multer.diskStorage({
   
   const upload = multer({
     storage: Storage
-  }).single('image')
+  }).single('image') 
 
 exports.createPost = (req, res) => {
     upload(req, res, async (err) => {
         try {
             const {spaceId, name, description} = req.body;
 
-            let result = "";
+            console.log(req)
 
-            if (req.file){
-                const path = req.file.path;
+            const path = req.file.path;
 
-                result = await cloudinary.uploader.upload(path);
-            }
+            const result = await cloudinary.uploader.upload(path);
 
             const space = await Space.findById(spaceId);
 
@@ -55,7 +53,8 @@ exports.createPost = (req, res) => {
             post.save().then(() => {
                 return res.status(200).json({
                     success:true,
-                    message: "Post created succesfully"
+                    message: "Post created succesfully",
+                    data: post
                 })
             }).catch((error) => {
                 console.error("post-create-error", error);

@@ -23,6 +23,7 @@ exports.createSpace = (req, res) => {
             const { title, description } = req.body;
 
             const token = req.headers.authorization.split(" ")[1]; 
+            
             var decoded = jwt_decode(token);
     
             const userId = decoded?.id;
@@ -91,6 +92,8 @@ exports.getSpace = async (req, res) => {
         const space = await Space.findById(id);
 
         const posts = await Post.find({ spaceId: space._id});
+
+        console.log(posts)
 
         space.posts = posts;
 

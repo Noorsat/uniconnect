@@ -11,7 +11,8 @@ const spaceSchema = new Schema(
     posts: [
       {
         id: {type: String},
-        text: { type: String},
+        name: { type: String},
+        description: { type: String},
         image: {type: String},
         likesCount: {type: Number},
         commentsCount: {type: Number}
