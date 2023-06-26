@@ -30,6 +30,9 @@ exports.createEvent = (req, res) => {
     
             const userId = decoded?.id;
 
+            console.log(req.files)
+            console.log(req.file)
+
             for (let i = 0; i < req.files.length-1; i++){
                 const path = req.files[i].path;
 
