@@ -11,4 +11,6 @@ router.get("/all", validateToken, SpacesController.getSpaces);
 
 router.get("/:id", validateToken, SpacesController.getSpace)
 
+router.get("/", validateToken, SpacesController.getMySpaces)
+
 module.exports = router;

@@ -113,3 +113,33 @@ exports.getSpace = async (req, res) => {
         })
     }
 }
+
+exports.getMySpaces = async (req, res) => {
+    try{
+        const token = req.headers.authorization.split(" ")[1]; 
+
+        var decoded = jwt_decode(token);
+
+        const userId = decoded?.id;
+
+        const space = await Space.find({userId: userId})
+
+        if (!space){
+            return res.status(500).json({
+                error:true,
+                message: `This user don't have spaces`
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'get mySpace succesfully',
+            data: space
+        })
+    }catch (error){
+        return res.status(500).json({
+            error:true,
+            message: error.message
+        })
+    }
+}
