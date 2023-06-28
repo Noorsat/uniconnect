@@ -1,4 +1,5 @@
 const Event = require("./event.model");
+const UserStories = require('./../userStories/userStories.model');
 const multer = require('multer');
 const cloudinary = require('../../utils/cloudinary');
 const jwt_decode = require("jwt-decode");
@@ -41,12 +42,22 @@ exports.createEvent = (req, res) => {
                 linksArray.push(result?.url);
             }
 
-            const path = req.files[req.files.length-1].path;
+            if (req.files.length > 1){
+                const path = req.files[req.files.length-1].path;
 
-            const result = await cloudinary.uploader.upload(path);
-
-            storyLink = result?.url;
-
+                const result = await cloudinary.uploader.upload(path);
+    
+                storyLink = result?.url;
+                
+                const newUserStories = new UserStories({
+                    userId: userId, 
+                    title: title,
+                    image: storyLink
+                })
+    
+                newUserStories.save()
+            }
+         
             const event = new Event({
                 title,
                 date,
@@ -59,7 +70,7 @@ exports.createEvent = (req, res) => {
                 userId,
                 images: linksArray,
                 storyImage: storyLink,
-            })
+            }) 
 
             event.save().then(() => {
                 return res.status(200).json({

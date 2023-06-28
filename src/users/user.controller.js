@@ -101,7 +101,6 @@ exports.Signup = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Registration Success",
-        referralCode: result.value.referralCode,
       });
     } catch (error) {
       console.error("signup-error", error);

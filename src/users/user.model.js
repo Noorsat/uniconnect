@@ -7,19 +7,17 @@ const userSchema = new Schema(
     userId: { type: String, unique: true, required: true },
     email: { type: String, required: true, unique: true },
     name: {type: String, required: true},
-    image: {type: String, required: true},
+    image: {type: String, required: false},
     surname: {type: String, required: true},
     active: { type: Boolean, default: false },
     password: { type: String, required: true },
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
-    image: {type: String, required: true},
     emailToken: { type: String, default: null },
     emailTokenExpires: { type: Date, default: null },
 
     accessToken: { type: String, default: null },
 
-    referralCode: { type: String, unique: true },
     referrer: { type: String, default: null },
   },
   {
